@@ -1,4 +1,5 @@
 //package com.examportal.security;
+
 //
 //import java.security.Key;
 //import java.util.Date;
@@ -80,7 +81,7 @@
 
 package com.examportal.security;
 
-//import java.security.Key;
+
 import java.util.Date;
 import javax.crypto.SecretKey;
 
@@ -123,7 +124,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    // ✅ 2. Get Username from JWT
+
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
@@ -133,7 +134,7 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    // ✅ 3. Validate Token
+ 
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser()
@@ -158,6 +159,7 @@ public class JwtUtils {
 //        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
 //        return Keys.hmacShaKeyFor(keyBytes);
 //    }
+    
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);

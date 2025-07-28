@@ -142,6 +142,11 @@ public class ExamServiceImpl implements ExamService {
             throw new ApiException("Exam is not currently active");
         }
         
+        // Check if all questions are answered
+        if (submitExamDTO.getAnswers().size() != exam.getQuestions().size()) {
+            throw new ApiException("All questions must be answered before submitting the exam.");
+        }
+        
         int totalScore = 0;
         int totalPossibleMarks = 0;
         
@@ -235,13 +240,13 @@ public class ExamServiceImpl implements ExamService {
         ResultResponseDTO dto = mapper.map(result, ResultResponseDTO.class);
         dto.setUsername(result.getUser().getUsername());
         dto.setExamTitle(result.getExam().getTitle());
-        
         // Calculate total marks from actual questions
         int totalMarks = result.getExam().getQuestions().stream()
             .mapToInt(Question::getMarks)
             .sum();
         dto.setTotalMarks(totalMarks);
         dto.setPercentage(percentage);
+        dto.setCreatedOn(result.getCreatedOn());
         return dto;
     }
 }

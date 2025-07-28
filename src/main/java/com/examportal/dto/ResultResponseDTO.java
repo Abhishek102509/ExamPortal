@@ -12,4 +12,5 @@ public class ResultResponseDTO extends BaseDTO {
     private Integer totalMarks;
     private String status;
     private Double percentage;
+    private java.time.LocalDateTime createdOn;
 }
