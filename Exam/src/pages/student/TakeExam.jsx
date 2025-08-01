@@ -57,16 +57,19 @@ const TakeExam = () => {
   const startExam = async (exam) => {
     try {
       setLoading(true)
-      const response = await questionAPI.getQuestionsByExam(exam.id)
+      
+      // First get detailed exam data with questions
+      const examResponse = await examAPI.getExamById(exam.id)
       console.log("=== START EXAM DEBUG ===")
       console.log("Exam:", exam)
-      console.log("Questions loaded:", response.data)
-      console.log("Questions count:", response.data?.length || 0)
+      console.log("Detailed exam data:", examResponse.data)
+      console.log("Questions from exam:", examResponse.data.questions)
+      console.log("Questions count:", examResponse.data.questions?.length || 0)
       
-      if (response.data && response.data.length > 0) {
-        setQuestions(response.data)
-        setSelectedExam(exam)
-        setTimeLeft((exam.durationMin || exam.duration) * 60) // Convert minutes to seconds
+      if (examResponse.data.questions && examResponse.data.questions.length > 0) {
+        setQuestions(examResponse.data.questions)
+        setSelectedExam(examResponse.data)
+        setTimeLeft((examResponse.data.durationMin || examResponse.data.duration) * 60) // Convert minutes to seconds
         setExamStarted(true)
         setCurrentQuestion(0)
         setAnswers({})

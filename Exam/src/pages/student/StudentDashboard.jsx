@@ -52,7 +52,7 @@ function StudentDashboard() {
           console.error("Error fetching results:", error)
           return { data: [] }
         }),
-        queryAPI.getQueriesByStudent(user?.id).catch((error) => {
+        queryAPI.getMyQueries().catch((error) => {
           console.error("Error fetching queries:", error)
           return { data: [] }
         }),

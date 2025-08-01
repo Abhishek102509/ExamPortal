@@ -38,11 +38,15 @@ function AdminQueries() {
 
   const handleSubmitResponse = async (e) => {
     e.preventDefault()
+    if (!response.trim()) {
+      toast.error("Please enter a response")
+      return
+    }
+    
     try {
       await queryAPI.updateQuery(selectedQuery.id, {
-        response: response,
+        response: response.trim(),
         status: "RESOLVED",
-        respondedAt: new Date().toISOString(),
       })
       toast.success("Response sent successfully")
       fetchQueries()
@@ -50,7 +54,8 @@ function AdminQueries() {
       setSelectedQuery(null)
       setResponse("")
     } catch (error) {
-      toast.error("Failed to send response")
+      console.error("Error sending response:", error)
+      toast.error(error.response?.data?.message || "Failed to send response")
     }
   }
 
@@ -164,7 +169,7 @@ function AdminQueries() {
                       <User size={16} className="me-1" />
                       <span className="me-3">{query.studentName || "Unknown Student"}</span>
                       <Calendar size={16} className="me-1" />
-                      <span>{new Date(query.createdAt).toLocaleDateString()}</span>
+                      <span>{new Date(query.createdAt || query.createdOn).toLocaleDateString()}</span>
                     </div>
                     <p className="text-muted">{query.description}</p>
                   </div>
@@ -221,7 +226,7 @@ function AdminQueries() {
                   <h5>{selectedQuery.subject}</h5>
                   <p className="text-muted">{selectedQuery.description}</p>
                   <small className="text-muted">
-                    From: {selectedQuery.studentName} • {new Date(selectedQuery.createdAt).toLocaleDateString()}
+                    From: {selectedQuery.studentName} • {new Date(selectedQuery.createdAt || selectedQuery.createdOn).toLocaleDateString()}
                   </small>
                 </Card.Body>
               </Card>

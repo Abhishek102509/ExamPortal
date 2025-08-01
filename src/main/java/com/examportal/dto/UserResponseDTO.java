@@ -10,5 +10,7 @@ import lombok.Setter;
 public class UserResponseDTO extends BaseDTO {
     private String username;
     private String email;
+    private String firstName;
+    private String lastName;
     private UserRole role;
 }

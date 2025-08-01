@@ -9,7 +9,7 @@ import { BookOpen, User, Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    emailOrUsername: "",
     password: "",
   })
   const [loading, setLoading] = useState(false)
@@ -30,8 +30,8 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {}
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required"
+    if (!formData.emailOrUsername.trim()) {
+      newErrors.emailOrUsername = "Email or Username is required"
     }
     if (!formData.password) {
       newErrors.password = "Password is required"
@@ -112,26 +112,26 @@ const Login = () => {
 
               {/* Form */}
               <Form onSubmit={handleSubmit}>
-                {/* Username field */}
+                {/* Email or Username field */}
                 <Form.Group className="mb-3">
-                  <Form.Label className="fw-medium">Username</Form.Label>
+                  <Form.Label className="fw-medium">Email or Username</Form.Label>
                   <InputGroup>
                     <InputGroup.Text className="bg-light border-end-0">
                       <User size={20} className="text-muted" />
                     </InputGroup.Text>
                     <Form.Control
                       type="text"
-                      name="username"
-                      value={formData.username}
+                      name="emailOrUsername"
+                      value={formData.emailOrUsername}
                       onChange={handleChange}
-                      placeholder="Enter your username"
+                      placeholder="Enter your email or username"
                       required
-                      isInvalid={!!errors.username}
+                      isInvalid={!!errors.emailOrUsername}
                       className="border-start-0"
                     />
                     <Form.Control.Feedback type="invalid">
                       <AlertCircle size={16} className="me-1" />
-                      {errors.username}
+                      {errors.emailOrUsername}
                     </Form.Control.Feedback>
                   </InputGroup>
                 </Form.Group>

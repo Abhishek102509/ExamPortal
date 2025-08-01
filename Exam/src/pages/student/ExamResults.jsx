@@ -128,11 +128,11 @@ function ExamResults() {
                     </Col>
                   </Row>
 
-                  {result.submittedAt && (
+                  {(result.submittedAt || result.createdOn) && (
                     <div className="mt-3 pt-3 border-top">
                       <p className="small text-muted mb-0">
-                        Submitted on: {new Date(result.submittedAt).toLocaleDateString()} at{" "}
-                        {new Date(result.submittedAt).toLocaleTimeString()}
+                        Submitted on: {new Date(result.submittedAt || result.createdOn).toLocaleDateString()} at{" "}
+                        {new Date(result.submittedAt || result.createdOn).toLocaleTimeString()}
                       </p>
                     </div>
                   )}

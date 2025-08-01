@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserSignupDTO {
+public class UserUpdateDTO {
     
     @NotBlank(message = "Username must be provided")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -23,7 +23,7 @@ public class UserSignupDTO {
     @Email(message = "Invalid email format")
     private String email;
     
-    @NotBlank(message = "Password must be provided")
+    // Password is optional for updates - if null/empty, password won't be changed
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
     

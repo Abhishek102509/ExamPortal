@@ -10,8 +10,8 @@ import lombok.ToString;
 @ToString
 public class UserSignInDTO {
     
-    @NotBlank(message = "Username must be provided")
-    private String username;
+    @NotBlank(message = "Email or Username must be provided")
+    private String emailOrUsername;
     
     @NotBlank(message = "Password must be provided")
     private String password;

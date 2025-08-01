@@ -34,14 +34,22 @@ public class User extends BaseEntity implements UserDetails {
     @Column(length = 100, nullable = false)
     private String password;
     
+    @Column(length = 50, nullable = false)
+    private String firstName;
+    
+    @Column(length = 50, nullable = false)
+    private String lastName;
+    
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private UserRole role;
 
-    public User(String username, String email, String password, UserRole role) {
+    public User(String username, String email, String password, String firstName, String lastName, UserRole role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.role = role;
     }
 

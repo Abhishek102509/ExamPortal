@@ -39,7 +39,7 @@ public class AuthController {
     @PostMapping("/signin")
     @Operation(summary = "Authenticate user and get JWT token")
     public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody UserSignInDTO signInDTO) {
-        String jwt = userService.authenticateUser(signInDTO);
-        return ResponseEntity.ok(new AuthResponse(jwt, "User signed in successfully"));
+        AuthResponse authResponse = userService.authenticateUser(signInDTO);
+        return ResponseEntity.ok(authResponse);
     }
 }

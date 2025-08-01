@@ -256,7 +256,7 @@ if (loading && users.length === 0) {
                   <td>
                     <div className="d-flex align-items-center text-muted">
                       <Calendar className="me-2" size={16} />
-                      {new Date(user.createdAt).toLocaleDateString()}
+                      {new Date(user.createdAt || user.createdOn).toLocaleDateString()}
                     </div>
                   </td>
                   <td className="text-end">
@@ -345,6 +345,16 @@ if (loading && users.length === 0) {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Password (Leave blank to keep current)</Form.Label>
+              <Form.Control
+                type="password"
+                value={formData.password || ""}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="Enter new password (optional)"
               />
             </Form.Group>
 

@@ -37,10 +37,11 @@ const StudentQueries = () => {
 
   const fetchQueries = async () => {
     try {
-      const response = await queryAPI.getQueriesByStudent(user.id)
+      const response = await queryAPI.getMyQueries()
       setQueries(response.data)
     } catch (error) {
       console.error("Failed to fetch queries:", error)
+      toast.error("Failed to fetch queries")
     } finally {
       setLoading(false)
     }
@@ -50,7 +51,7 @@ const StudentQueries = () => {
     e.preventDefault()
     setLoading(true)
 
-    if (!user || !user.id) {
+    if (!user) {
       toast.error("User not loaded. Please log in again.")
       setLoading(false)
       return
@@ -59,8 +60,6 @@ const StudentQueries = () => {
     try {
       const queryData = {
         ...formData,
-        studentId: user.id,
-        status: "PENDING",
       }
 
       await queryAPI.createQuery(queryData)
@@ -69,7 +68,8 @@ const StudentQueries = () => {
       setShowModal(false)
       setFormData({ subject: "", description: "" })
     } catch (error) {
-      toast.error("Failed to submit query")
+      console.error("Error submitting query:", error)
+      toast.error(error.response?.data?.message || "Failed to submit query")
     } finally {
       setLoading(false)
     }
@@ -99,8 +99,8 @@ const StudentQueries = () => {
 
   const filteredQueries = queries.filter(
     (query) =>
-      query.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      query.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      query.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      query.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   if (loading && queries.length === 0) {
@@ -150,7 +150,7 @@ const StudentQueries = () => {
                   </Badge>
                   <p>{query.description}</p>
                   <small className="text-muted">
-                    Submitted on {new Date(query.createdAt).toLocaleDateString()}
+                    Submitted on {new Date(query.createdAt || query.createdOn).toLocaleDateString()}
                   </small>
                 </div>
               </div>

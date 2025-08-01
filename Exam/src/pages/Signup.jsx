@@ -12,6 +12,8 @@ function Signup() {
     username: "",
     email: "",
     password: "",
+    firstName: "",
+    lastName: "",
     role: "STUDENT",
   })
   const [loading, setLoading] = useState(false)
@@ -39,6 +41,18 @@ function Signup() {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters"
+    }
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required"
+    } else if (formData.firstName.length < 2) {
+      newErrors.firstName = "First name must be at least 2 characters"
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required"
+    } else if (formData.lastName.length < 2) {
+      newErrors.lastName = "Last name must be at least 2 characters"
     }
 
     setErrors(newErrors)
@@ -76,7 +90,16 @@ function Signup() {
         toast.success("Account created successfully! Please login.")
         navigate("/login")
       } else {
-        toast.error(result.error)
+        // Handle different types of errors from backend
+        let errorMessage = result.error
+        if (result.error && typeof result.error === 'string') {
+          if (result.error.includes('Username already exists')) {
+            setErrors({ username: 'Username already exists' })
+          } else if (result.error.includes('Email already exists')) {
+            setErrors({ email: 'Email already exists' })
+          }
+        }
+        toast.error(errorMessage || 'Signup failed')
       }
     } catch (error) {
       console.error("Signup error:", error)
@@ -155,6 +178,52 @@ function Signup() {
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.email}
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+
+                {/* First Name field */}
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-medium">First Name</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text className="bg-light border-end-0">
+                      <User size={20} className="text-muted" />
+                    </InputGroup.Text>
+                    <Form.Control
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="Enter your first name"
+                      required
+                      isInvalid={!!errors.firstName}
+                      className="border-start-0"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.firstName}
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+
+                {/* Last Name field */}
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-medium">Last Name</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Text className="bg-light border-end-0">
+                      <User size={20} className="text-muted" />
+                    </InputGroup.Text>
+                    <Form.Control
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Enter your last name"
+                      required
+                      isInvalid={!!errors.lastName}
+                      className="border-start-0"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.lastName}
                     </Form.Control.Feedback>
                   </InputGroup>
                 </Form.Group>

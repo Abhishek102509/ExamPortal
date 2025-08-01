@@ -12,4 +12,10 @@ import lombok.Setter;
 public class AuthResponse {
     private String jwt;
     private String message;
+    private UserResponseDTO user;
+    
+    public AuthResponse(String jwt, String message) {
+        this.jwt = jwt;
+        this.message = message;
+    }
 }
