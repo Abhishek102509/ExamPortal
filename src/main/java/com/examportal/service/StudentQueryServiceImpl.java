@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.examportal.dao.StudentQueryDao;
+import com.examportal.dao.UserDao;
 import com.examportal.dto.StudentQueryDTO;
 import com.examportal.dto.StudentQueryResponseDTO;
+import com.examportal.dto.StudentQueryUpdateDTO;
 import com.examportal.entities.StudentQuery;
+import com.examportal.entities.User;
 import com.examportal.exceptions.ResourceNotFoundException;
 
 @Service
@@ -22,11 +25,17 @@ public class StudentQueryServiceImpl implements StudentQueryService {
     private StudentQueryDao studentQueryDao;
     
     @Autowired
+    private UserDao userDao;
+    
+    @Autowired
     private ModelMapper mapper;
 
     @Override
     public StudentQueryResponseDTO submitQuery(String username, StudentQueryDTO queryDTO) {
-        StudentQuery studentQuery = new StudentQuery(username, queryDTO.getTitle(), queryDTO.getQuery());
+        User student = userDao.findByUsername(username)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        
+        StudentQuery studentQuery = new StudentQuery(student, queryDTO.getTitle(), queryDTO.getSubject(), queryDTO.getQuery());
         StudentQuery savedQuery = studentQueryDao.save(studentQuery);
         return mapper.map(savedQuery, StudentQueryResponseDTO.class);
     }
@@ -34,7 +43,9 @@ public class StudentQueryServiceImpl implements StudentQueryService {
     @Override
     @Transactional(readOnly = true)
     public List<StudentQueryResponseDTO> getQueriesByUser(String username) {
-        return studentQueryDao.findByUsername(username).stream()
+        User student = userDao.findByUsername(username)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        return studentQueryDao.findByStudent(student).stream()
             .map(query -> mapper.map(query, StudentQueryResponseDTO.class))
             .collect(Collectors.toList());
     }
@@ -45,6 +56,19 @@ public class StudentQueryServiceImpl implements StudentQueryService {
         return studentQueryDao.findAll().stream()
             .map(query -> mapper.map(query, StudentQueryResponseDTO.class))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public StudentQueryResponseDTO updateQuery(Long queryId, StudentQueryUpdateDTO updateDTO) {
+        StudentQuery query = studentQueryDao.findById(queryId)
+            .orElseThrow(() -> new ResourceNotFoundException("Query not found with id: " + queryId));
+        
+        query.setResponse(updateDTO.getResponse());
+        query.setStatus(updateDTO.getStatus());
+        query.setRespondedAt(java.time.LocalDateTime.now());
+        
+        StudentQuery updatedQuery = studentQueryDao.save(query);
+        return mapper.map(updatedQuery, StudentQueryResponseDTO.class);
     }
 
     @Override

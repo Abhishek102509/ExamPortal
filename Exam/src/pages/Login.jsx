@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { Container, Row, Col, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap'
 import { useAuth } from "../contexts/AuthContext"
 import toast from "react-hot-toast"
@@ -17,6 +17,7 @@ const Login = () => {
   const [errors, setErrors] = useState({})
   const { login, user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     if (user) {
@@ -26,7 +27,16 @@ const Login = () => {
         navigate("/student/dashboard")
       }
     }
-  }, [user, navigate])
+    
+    // Pre-fill email if coming from OTP verification
+    const emailFromState = location.state?.email
+    if (emailFromState) {
+      setFormData(prev => ({
+        ...prev,
+        emailOrUsername: emailFromState
+      }))
+    }
+  }, [user, navigate, location.state])
 
   const validateForm = () => {
     const newErrors = {}

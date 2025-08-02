@@ -61,9 +61,10 @@ function AdminQueries() {
 
   const filteredQueries = queries.filter((query) => {
     const matchesSearch =
+      query.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       query.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      query.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      query.studentName?.toLowerCase().includes(searchTerm.toLowerCase())
+      query.query?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      query.username?.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesStatus = statusFilter === "ALL" || query.status === statusFilter
 
@@ -160,18 +161,19 @@ function AdminQueries() {
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <div className="flex-grow-1">
                     <div className="d-flex align-items-center mb-2">
-                      <h5 className="me-3">{query.subject}</h5>
+                      <h5 className="me-3">{query.title}</h5>
+                      <Badge bg="info" className="me-2">{query.subject}</Badge>
                       <Badge bg={query.status === "PENDING" ? "warning" : "success"}>
                         {query.status}
                       </Badge>
                     </div>
                     <div className="d-flex align-items-center text-muted small mb-2">
                       <User size={16} className="me-1" />
-                      <span className="me-3">{query.studentName || "Unknown Student"}</span>
+                      <span className="me-3">{query.username || "Unknown Student"}</span>
                       <Calendar size={16} className="me-1" />
-                      <span>{new Date(query.createdAt || query.createdOn).toLocaleDateString()}</span>
+                      <span>{new Date(query.createdOn || query.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <p className="text-muted">{query.description}</p>
+                    <p className="text-muted">{query.query}</p>
                   </div>
                   <Button
                     variant={query.status === "PENDING" ? "primary" : "outline-secondary"}
@@ -223,10 +225,11 @@ function AdminQueries() {
             <>
               <Card className="mb-4">
                 <Card.Body>
-                  <h5>{selectedQuery.subject}</h5>
-                  <p className="text-muted">{selectedQuery.description}</p>
+                  <h5>{selectedQuery.title}</h5>
+                  <Badge bg="info" className="mb-2">{selectedQuery.subject}</Badge>
+                  <p className="text-muted">{selectedQuery.query}</p>
                   <small className="text-muted">
-                    From: {selectedQuery.studentName} • {new Date(selectedQuery.createdAt || selectedQuery.createdOn).toLocaleDateString()}
+                    From: {selectedQuery.username} • {new Date(selectedQuery.createdOn || selectedQuery.createdAt).toLocaleDateString()}
                   </small>
                 </Card.Body>
               </Card>

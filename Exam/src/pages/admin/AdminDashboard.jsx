@@ -26,26 +26,50 @@ function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true)
+      console.log("Fetching dashboard data...")
       
       const [examsRes, queriesRes, usersRes] = await Promise.all([
-        examAPI.getAllExams().catch((error) => {
+        examAPI.getAllExams().then(res => {
+          console.log("Exams data:", res.data)
+          return res
+        }).catch((error) => {
           console.error("Error fetching exams:", error)
+          toast.error("Failed to load exams")
           return { data: [] }
         }),
-        queryAPI.getAllQueries().catch((error) => {
+        queryAPI.getAllQueries().then(res => {
+          console.log("Queries data:", res.data)
+          return res
+        }).catch((error) => {
           console.error("Error fetching queries:", error)
+          toast.error("Failed to load queries")
           return { data: [] }
         }),
-        userAPI.getAllUsers().catch((error) => {
+        userAPI.getAllUsers().then(res => {
+          console.log("Users data:", res.data)
+          return res
+        }).catch((error) => {
           console.error("Error fetching users:", error)
+          toast.error("Failed to load users")
           return { data: [] }
         }),
       ])
 
+      const now = new Date()
       const totalExams = examsRes.data?.length || 0
-      const completedExams = examsRes.data?.filter(exam => exam.status === 'COMPLETED').length || 0
+      const completedExams = examsRes.data?.filter(exam => {
+        const endTime = new Date(exam.endTime)
+        return now > endTime
+      }).length || 0
       const pendingQueries = queriesRes.data?.filter(q => q.status === "PENDING")?.length || 0
       const totalStudents = usersRes.data?.filter(u => u.role === "STUDENT").length || 0
+
+      console.log("Calculated stats:", {
+        totalExams,
+        completedExams,
+        pendingQueries,
+        totalStudents,
+      })
 
       setStats({
         totalExams,
@@ -67,7 +91,7 @@ function AdminDashboard() {
   const statCards = [
     {
       title: "Total Students",
-      value: stats.totalUsers,
+      value: stats.totalStudents,
       icon: Users,
       link: "/admin/users",
     },
@@ -138,7 +162,7 @@ function AdminDashboard() {
           const Icon = stat.icon;
           return (
             <Col md={6} lg={3} key={index} className="mb-4">
-              <Card onClick={() => navigate(stat.link)} className="cursor-pointer">
+              <Card onClick={() => navigate(stat.link)} style={{ cursor: 'pointer' }}>
                 <Card.Body className="d-flex justify-content-between align-items-center">
                   <div>
                     <div className="text-muted">{stat.title}</div>
@@ -162,12 +186,21 @@ function AdminDashboard() {
             <Card.Body>
               {recentExams.length > 0 ? (
                 <ul className="list-group">
-                  {recentExams.map((exam) => (
-                    <li key={exam.id} className="list-group-item d-flex justify-content-between align-items-center">
-                      <span>{exam.title}</span>
-                      <Badge bg={exam.active ? "success" : "secondary"}>{exam.active ? "Active" : "Inactive"}</Badge>
-                    </li>
-                  ))}
+                  {recentExams.map((exam) => {
+                    const now = new Date();
+                    const startTime = new Date(exam.startTime);
+                    const endTime = new Date(exam.endTime);
+                    const isActive = now >= startTime && now <= endTime;
+                    const status = now < startTime ? "Upcoming" : (isActive ? "Active" : "Completed");
+                    const badgeColor = now < startTime ? "info" : (isActive ? "success" : "secondary");
+                    
+                    return (
+                      <li key={exam.id} className="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{exam.title}</span>
+                        <Badge bg={badgeColor}>{status}</Badge>
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <p className="text-center text-muted">No exams created yet</p>
@@ -186,7 +219,7 @@ function AdminDashboard() {
                 <ul className="list-group">
                   {recentQueries.map((query) => (
                     <li key={query.id} className="list-group-item d-flex justify-content-between align-items-center">
-                      <span>{query.subject}</span>
+                      <span>{query.title}</span>
                       <Badge bg={query.status === "PENDING" ? "warning" : "success"}>{query.status}</Badge>
                     </li>
                   ))}

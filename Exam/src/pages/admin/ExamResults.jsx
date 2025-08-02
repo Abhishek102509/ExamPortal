@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
+import { Container, Row, Col, Card, Badge, Spinner, Table, Tabs, Tab, ProgressBar } from 'react-bootstrap'
 import { resultAPI, examAPI } from "../../services/api"
 import { toast } from "react-hot-toast"
-import { FileText, Clock, CheckCircle, XCircle, Award, TrendingUp, Users } from "lucide-react"
+import { FileText, Clock, CheckCircle, XCircle, Award, TrendingUp, Users, UserCheck, UserX, BarChart3 } from "lucide-react"
 
 const ExamResults = () => {
   const { examId } = useParams()
@@ -36,25 +37,25 @@ const ExamResults = () => {
     }
   }
 
-  const getStatusColor = (status) => {
+  const getStatusBadge = (status) => {
     switch (status?.toUpperCase()) {
       case "PASSED":
-        return "bg-green-100 text-green-800"
+        return "success"
       case "FAILED":
-        return "bg-red-100 text-red-800"
+        return "danger"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "secondary"
     }
   }
 
   const getStatusIcon = (status) => {
     switch (status?.toUpperCase()) {
       case "PASSED":
-        return <CheckCircle className="h-5 w-5 text-green-600" />
+        return <CheckCircle size={18} className="text-success" />
       case "FAILED":
-        return <XCircle className="h-5 w-5 text-red-600" />
+        return <XCircle size={18} className="text-danger" />
       default:
-        return <Clock className="h-5 w-5 text-gray-600" />
+        return <Clock size={18} className="text-secondary" />
     }
   }
 
@@ -74,128 +75,253 @@ const ExamResults = () => {
   }
 
   const stats = calculateStats()
+  const passedStudents = results.filter(r => r.status === "PASSED")
+  const failedStudents = results.filter(r => r.status === "FAILED")
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <Container className="d-flex align-items-center justify-content-center vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Exam Results</h1>
-        <p className="text-gray-600">
-          {exam?.title} - {results.length} submissions
-        </p>
-      </div>
+    <Container fluid className="py-4">
+      {/* Header */}
+      <Row className="mb-4">
+        <Col>
+          <Card className="text-white bg-primary">
+            <Card.Body>
+              <div className="d-flex align-items-center justify-content-between">
+                <div>
+                  <h1 className="display-6 mb-2">{exam?.title} - Results</h1>
+                  <p className="lead mb-0">
+                    Subject: {exam?.subject} | Duration: {exam?.durationMin || exam?.duration} minutes | Total Marks: {exam?.totalMarks}
+                  </p>
+                </div>
+                <Award size={48} className="text-white opacity-75" />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Submissions</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total}</p>
-            </div>
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Passed</p>
-              <p className="text-3xl font-bold text-green-600 mt-2">{stats.passed}</p>
-            </div>
-            <div className="bg-green-100 p-3 rounded-lg">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Failed</p>
-              <p className="text-3xl font-bold text-red-600 mt-2">{stats.failed}</p>
-            </div>
-            <div className="bg-red-100 p-3 rounded-lg">
-              <XCircle className="h-6 w-6 text-red-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Average Score</p>
-              <p className="text-3xl font-bold text-purple-600 mt-2">{stats.average}%</p>
-            </div>
-            <div className="bg-purple-100 p-3 rounded-lg">
-              <TrendingUp className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Results List */}
-      {results.length === 0 ? (
-        <div className="text-center py-12">
-          <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No submissions for this exam yet</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Student Submissions</h2>
-          </div>
-
-          <div className="divide-y divide-gray-200">
-            {results.map((result) => (
-              <div key={result.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">{result.username}</h3>
-                    <div className="flex items-center space-x-6 text-sm text-gray-500">
-                      <span>Score: {result.totalScore}/{result.totalMarks}</span>
-                      <span>Percentage: {result.percentage?.toFixed(1)}%</span>
-                      {result.createdOn && (
-                        <span>Submitted: {new Date(result.createdOn).toLocaleDateString()}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    {getStatusIcon(result.status)}
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(result.status)}`}>
-                      {result.status}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="mt-4">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full ${
-                        result.percentage >= 50 ? "bg-green-500" : "bg-red-500"
-                      }`}
-                      style={{ width: `${result.percentage}%` }}
-                    ></div>
-                  </div>
-                </div>
+      <Row className="mb-4">
+        <Col md={3} className="mb-3">
+          <Card className="h-100 border-0 shadow-sm">
+            <Card.Body className="d-flex align-items-center justify-content-between">
+              <div>
+                <p className="text-muted mb-1">Total Submissions</p>
+                <h3 className="mb-0">{stats.total}</h3>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="bg-primary bg-opacity-10 p-3 rounded-circle">
+                <Users size={24} className="text-primary" />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} className="mb-3">
+          <Card className="h-100 border-0 shadow-sm">
+            <Card.Body className="d-flex align-items-center justify-content-between">
+              <div>
+                <p className="text-muted mb-1">Passed</p>
+                <h3 className="text-success mb-0">{stats.passed}</h3>
+              </div>
+              <div className="bg-success bg-opacity-10 p-3 rounded-circle">
+                <UserCheck size={24} className="text-success" />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} className="mb-3">
+          <Card className="h-100 border-0 shadow-sm">
+            <Card.Body className="d-flex align-items-center justify-content-between">
+              <div>
+                <p className="text-muted mb-1">Failed</p>
+                <h3 className="text-danger mb-0">{stats.failed}</h3>
+              </div>
+              <div className="bg-danger bg-opacity-10 p-3 rounded-circle">
+                <UserX size={24} className="text-danger" />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} className="mb-3">
+          <Card className="h-100 border-0 shadow-sm">
+            <Card.Body className="d-flex align-items-center justify-content-between">
+              <div>
+                <p className="text-muted mb-1">Average Score</p>
+                <h3 className="text-warning mb-0">{stats.average}%</h3>
+              </div>
+              <div className="bg-warning bg-opacity-10 p-3 rounded-circle">
+                <BarChart3 size={24} className="text-warning" />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Results with Pass/Fail Tabs */}
+      {results.length === 0 ? (
+        <Row>
+          <Col>
+            <Card>
+              <Card.Body className="text-center py-5">
+                <FileText size={48} className="text-muted mb-3" />
+                <h5>No Submissions Found</h5>
+                <p className="text-muted">No students have submitted this exam yet.</p>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      ) : (
+        <Row>
+          <Col>
+            <Card>
+              <Card.Header>
+                <h5 className="mb-0">Student Results</h5>
+              </Card.Header>
+              <Card.Body className="p-0">
+                <Tabs defaultActiveKey="all" className="nav-fill">
+                  <Tab eventKey="all" title={`All Students (${stats.total})`}>
+                    <Table responsive hover className="mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th>Student Name</th>
+                          <th>Score</th>
+                          <th>Percentage</th>
+                          <th>Status</th>
+                          <th>Progress</th>
+                          <th>Submitted Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {results.map((result) => (
+                          <tr key={result.id}>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                {getStatusIcon(result.status)}
+                                <span className="ms-2 fw-medium">{result.username}</span>
+                              </div>
+                            </td>
+                            <td className="fw-bold">{result.totalScore}/{result.totalMarks}</td>
+                            <td className="fw-bold">{result.percentage?.toFixed(1)}%</td>
+                            <td>
+                              <Badge bg={getStatusBadge(result.status)}>
+                                {result.status}
+                              </Badge>
+                            </td>
+                            <td style={{ width: '150px' }}>
+                              <ProgressBar 
+                                now={result.percentage} 
+                                variant={result.percentage >= 50 ? 'success' : 'danger'}
+                                style={{ height: '8px' }}
+                              />
+                            </td>
+                            <td>
+                              {result.createdOn ? new Date(result.createdOn).toLocaleDateString() : 'N/A'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Tab>
+                  
+                  <Tab eventKey="passed" title={`Passed (${stats.passed})`}>
+                    <Table responsive hover className="mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th>Student Name</th>
+                          <th>Score</th>
+                          <th>Percentage</th>
+                          <th>Progress</th>
+                          <th>Submitted Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {passedStudents.map((result) => (
+                          <tr key={result.id} className="table-success-subtle">
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <CheckCircle size={18} className="text-success me-2" />
+                                <span className="fw-medium">{result.username}</span>
+                              </div>
+                            </td>
+                            <td className="fw-bold">{result.totalScore}/{result.totalMarks}</td>
+                            <td className="fw-bold text-success">{result.percentage?.toFixed(1)}%</td>
+                            <td style={{ width: '150px' }}>
+                              <ProgressBar 
+                                now={result.percentage} 
+                                variant="success"
+                                style={{ height: '8px' }}
+                              />
+                            </td>
+                            <td>
+                              {result.createdOn ? new Date(result.createdOn).toLocaleDateString() : 'N/A'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                    {passedStudents.length === 0 && (
+                      <div className="text-center py-4">
+                        <p className="text-muted">No students passed this exam.</p>
+                      </div>
+                    )}
+                  </Tab>
+                  
+                  <Tab eventKey="failed" title={`Failed (${stats.failed})`}>
+                    <Table responsive hover className="mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th>Student Name</th>
+                          <th>Score</th>
+                          <th>Percentage</th>
+                          <th>Progress</th>
+                          <th>Submitted Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {failedStudents.map((result) => (
+                          <tr key={result.id} className="table-danger-subtle">
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <XCircle size={18} className="text-danger me-2" />
+                                <span className="fw-medium">{result.username}</span>
+                              </div>
+                            </td>
+                            <td className="fw-bold">{result.totalScore}/{result.totalMarks}</td>
+                            <td className="fw-bold text-danger">{result.percentage?.toFixed(1)}%</td>
+                            <td style={{ width: '150px' }}>
+                              <ProgressBar 
+                                now={result.percentage} 
+                                variant="danger"
+                                style={{ height: '8px' }}
+                              />
+                            </td>
+                            <td>
+                              {result.createdOn ? new Date(result.createdOn).toLocaleDateString() : 'N/A'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                    {failedStudents.length === 0 && (
+                      <div className="text-center py-4">
+                        <p className="text-muted">No students failed this exam.</p>
+                      </div>
+                    )}
+                  </Tab>
+                </Tabs>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       )}
-    </div>
+    </Container>
   )
 }
 
-export default ExamResults 
+export default ExamResults

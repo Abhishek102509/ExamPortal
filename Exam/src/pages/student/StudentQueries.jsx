@@ -27,8 +27,9 @@ const StudentQueries = () => {
   const [showModal, setShowModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [formData, setFormData] = useState({
+    title: "",
     subject: "",
-    description: "",
+    query: "",
   })
 
   useEffect(() => {
@@ -66,7 +67,7 @@ const StudentQueries = () => {
       toast.success("Query submitted successfully")
       fetchQueries()
       setShowModal(false)
-      setFormData({ subject: "", description: "" })
+      setFormData({ title: "", subject: "", query: "" })
     } catch (error) {
       console.error("Error submitting query:", error)
       toast.error(error.response?.data?.message || "Failed to submit query")
@@ -99,8 +100,9 @@ const StudentQueries = () => {
 
   const filteredQueries = queries.filter(
     (query) =>
+      query.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       query.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      query.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      query.query?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   if (loading && queries.length === 0) {
@@ -143,14 +145,15 @@ const StudentQueries = () => {
             <Card.Body>
               <div className="d-flex justify-content-between align-items-start">
                 <div>
-                  <h5 className="mb-2">{query.subject}</h5>
+                  <h5 className="mb-2">{query.title}</h5>
+                  <Badge bg="info" className="mb-2 me-2">{query.subject}</Badge>
                   <Badge bg={getStatusVariant(query.status)} className="mb-3">
                     {getStatusIcon(query.status)}
                     {query.status}
                   </Badge>
-                  <p>{query.description}</p>
+                  <p>{query.query}</p>
                   <small className="text-muted">
-                    Submitted on {new Date(query.createdAt || query.createdOn).toLocaleDateString()}
+                    Submitted on {new Date(query.createdOn || query.createdAt).toLocaleDateString()}
                   </small>
                 </div>
               </div>
@@ -188,10 +191,21 @@ const StudentQueries = () => {
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
             <Form.Group className="mb-3">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Brief title for your query"
+                required
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label>Subject</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Brief subject of your query"
+                placeholder="Subject category (e.g., Mathematics, Physics, etc.)"
                 required
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -199,14 +213,14 @@ const StudentQueries = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Query</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={4}
                 placeholder="Describe your question or issue in detail..."
                 required
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                value={formData.query}
+                onChange={(e) => setFormData({ ...formData, query: e.target.value })}
               />
             </Form.Group>
           </Modal.Body>
@@ -215,7 +229,7 @@ const StudentQueries = () => {
               variant="secondary"
               onClick={() => {
                 setShowModal(false)
-                setFormData({ subject: "", description: "" })
+                setFormData({ title: "", subject: "", query: "" })
               }}
             >
               Cancel

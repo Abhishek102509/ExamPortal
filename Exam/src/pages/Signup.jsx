@@ -87,15 +87,16 @@ function Signup() {
       const result = await signup(formData)
 
       if (result.success) {
-        toast.success("Account created successfully! Please login.")
-        navigate("/login")
+        toast.success("Registration successful! Please check your email for OTP.")
+        // Navigate to OTP verification page with email
+        navigate("/verify-otp", { state: { email: formData.email } })
       } else {
         // Handle different types of errors from backend
-        let errorMessage = result.error
-        if (result.error && typeof result.error === 'string') {
-          if (result.error.includes('Username already exists')) {
+        let errorMessage = result.error || result.message
+        if (errorMessage && typeof errorMessage === 'string') {
+          if (errorMessage.includes('Username already exists')) {
             setErrors({ username: 'Username already exists' })
-          } else if (result.error.includes('Email already exists')) {
+          } else if (errorMessage.includes('Email already exists')) {
             setErrors({ email: 'Email already exists' })
           }
         }

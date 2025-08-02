@@ -1,5 +1,3 @@
-"use client"
-
 import { useAuth } from "../contexts/AuthContext"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Container, Row, Col, Card, Button, Offcanvas, Nav, Navbar } from 'react-bootstrap'
@@ -31,6 +29,7 @@ const Layout = ({ children }) => {
         { name: "Question Management", href: "/admin/questions", icon: FileText },
         { name: "User Management", href: "/admin/users", icon: Users },
         { name: "Student Queries", href: "/admin/queries", icon: HelpCircle },
+         { name: "ExamResults", href: "/admin/results", icon: HelpCircle },
       ]
     : [
         { name: "Dashboard", href: "/student/dashboard", icon: Home },
@@ -161,7 +160,7 @@ const Layout = ({ children }) => {
       {/* Main content */}
       <div className="flex-grow-1 d-flex flex-column">
         {/* Top bar */}
-        <Navbar bg="white" className="shadow-sm border-bottom sticky-top px-4">
+        {/* <Navbar bg="white" className="shadow-sm border-bottom sticky-top px-4">
           <div className="d-flex align-items-center">
             <Button 
               variant="link"
@@ -185,7 +184,44 @@ const Layout = ({ children }) => {
               </div>
             </div>
           </div>
-        </Navbar>
+        </Navbar> */}
+
+
+
+
+<Navbar bg="white" className="shadow-sm border-bottom sticky-top">
+  <Container fluid>
+    <div className="d-flex justify-content-between w-100 align-items-center">
+      {/* Left side - Menu button and title */}
+      <div className="d-flex align-items-center">
+        <Button 
+          variant="link"
+          onClick={() => setSidebarOpen(true)} 
+          className="d-lg-none text-dark p-2 me-2"
+        >
+          <Menu size={24} />
+        </Button>
+        <h1 className="h5 mb-0 fw-semibold">
+          {navigation.find((item) => isActive(item.href))?.name || "Dashboard"}
+        </h1>
+      </div>
+
+      {/* Right side - User info */}
+      <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center me-3">
+          <span className="text-muted small me-2">Welcome,</span>
+          <span className="fw-medium">{user?.username}</span>
+        </div>
+        <div className="d-lg-none">
+          <div className="bg-primary rounded-circle p-1">
+            <User className="text-white" size={16} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Navbar>
+
 
         {/* Page content */}
         <main className="flex-grow-1 p-4 overflow-auto">

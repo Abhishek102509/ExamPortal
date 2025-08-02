@@ -5,13 +5,15 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import Layout from "./components/Layout"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
+import OTPVerification from "./components/OTPVerification"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import StudentDashboard from "./pages/student/StudentDashboard"
 import ExamManagement from "./pages/admin/ExamManagement"
 import QuestionManagement from "./pages/admin/QuestionManagement"
 import UserManagement from "./pages/admin/UserManagement"
 import AdminQueries from "./pages/admin/AdminQueries"
-import AdminExamResults from "./pages/admin/ExamResults"
+import AdminExamResults from "./pages/admin/ExamResults";
+import AllExamResults from "./pages/admin/AllExamResults";
 import TakeExam from "./pages/student/TakeExam"
 import ExamResults from "./pages/student/ExamResults"
 import StudentQueries from "./pages/student/StudentQueries"
@@ -59,6 +61,7 @@ function AppContent() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-otp" element={<OTPVerification />} />
 
             {/* Protected admin routes */}
             <Route
@@ -121,8 +124,17 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
-
-            {/* Protected student routes */}
+            
+            <Route
+              path="/admin/results"
+              element={
+                <ProtectedRoute requiredRole="TEACHER">
+                  <Layout>
+                    <AllExamResults />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/student/dashboard"
               element={

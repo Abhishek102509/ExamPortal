@@ -82,11 +82,48 @@ export const AuthProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       const response = await authAPI.signup(userData)
-      return { success: true, data: response.data }
+      // Backend now returns { success: true/false, message: "...", timeStamp: "..." }
+      return { 
+        success: response.data.success, 
+        message: response.data.message,
+        data: response.data 
+      }
     } catch (error) {
       return {
         success: false,
         error: error.response?.data?.message || "Signup failed",
+      }
+    }
+  }
+
+  const verifyOTP = async (otpData) => {
+    try {
+      const response = await authAPI.verifyOTP(otpData)
+      return {
+        success: response.data.success,
+        message: response.data.message,
+        data: response.data
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "OTP verification failed",
+      }
+    }
+  }
+
+  const resendOTP = async (emailData) => {
+    try {
+      const response = await authAPI.resendOTP(emailData)
+      return {
+        success: response.data.success,
+        message: response.data.message,
+        data: response.data
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to resend OTP",
       }
     }
   }
@@ -101,6 +138,8 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     signup,
+    verifyOTP,
+    resendOTP,
     logout,
     loading,
   }

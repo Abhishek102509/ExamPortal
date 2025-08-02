@@ -11,6 +11,9 @@ public class StudentQueryDTO {
     @NotBlank(message = "Title must be provided")
     private String title;
     
+    @NotBlank(message = "Subject must be provided")
+    private String subject;
+    
     @NotBlank(message = "Query must be provided")
     private String query;
 }
