@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,12 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private UserRole role;
+    
+    @Column(name = "is_enabled", nullable = false)
+    private boolean enabled = true;
+    
+    @Column(name = "is_email_verified", nullable = false)
+    private boolean emailVerified = false;
 
     public User(String username, String email, String password, String firstName, String lastName, UserRole role) {
         this.username = username;
@@ -51,6 +58,17 @@ public class User extends BaseEntity implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
+        this.enabled = true;
+        this.emailVerified = false;
+    }
+    
+    @PrePersist
+    public void prePersist() {
+        if (this.enabled == false && this.enabled != true) {
+            this.enabled = true;
+        }
+        // emailVerified should default to false, but ensure it's set
+        // (it will be false by default due to field initialization)
     }
 
     @Override
@@ -80,6 +98,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 }

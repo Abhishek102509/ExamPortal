@@ -42,8 +42,12 @@ api.interceptors.response.use(
 export const authAPI = {
   login: (credentials) => api.post("/auth/signin", credentials),
   signup: (userData) => api.post("/auth/signup", userData),
-  verifyOTP: (otpData) => api.post("/auth/verify-otp", otpData),
-  resendOTP: (emailData) => api.post("/auth/resend-otp", emailData),
+}
+
+// OTP API
+export const otpAPI = {
+  generateOTP: (otpData) => api.post("/otp/generate", otpData),
+  verifyOTP: (otpData) => api.post("/otp/verify", otpData),
 }
 
 // User API

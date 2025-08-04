@@ -51,8 +51,19 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("Email already exists!");
         }
         
-        User user = mapper.map(signupDTO, User.class);
-        user.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
+        // Create user manually instead of using mapper to avoid mapping issues
+        User user = new User(
+            signupDTO.getUsername(),
+            signupDTO.getEmail(),
+            passwordEncoder.encode(signupDTO.getPassword()),
+            signupDTO.getFirstName(),
+            signupDTO.getLastName(),
+            signupDTO.getRole()
+        );
+        
+        // Explicitly set boolean fields to ensure they have values
+        user.setEnabled(true);
+        user.setEmailVerified(false);
         
         User savedUser = userDao.save(user);
         return mapper.map(savedUser, UserResponseDTO.class);

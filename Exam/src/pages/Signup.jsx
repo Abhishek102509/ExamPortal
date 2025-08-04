@@ -87,9 +87,9 @@ function Signup() {
       const result = await signup(formData)
 
       if (result.success) {
-        toast.success("Registration successful! Please check your email for OTP.")
-        // Navigate to OTP verification page with email
-        navigate("/verify-otp", { state: { email: formData.email } })
+        toast.success("Registration successful! You can now login with your credentials.")
+        // Navigate directly to login page since OTP is temporarily disabled
+        navigate("/login")
       } else {
         // Handle different types of errors from backend
         let errorMessage = result.error || result.message

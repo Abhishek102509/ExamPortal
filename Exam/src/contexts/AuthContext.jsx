@@ -82,13 +82,27 @@ export const AuthProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       const response = await authAPI.signup(userData)
-      // Backend now returns { success: true/false, message: "...", timeStamp: "..." }
+      
+      console.log("Signup response:", response.data)
+      
+      // If we get a successful HTTP response (200/201), consider it successful
+      // The backend saves the user successfully and returns a response
+      if (response.status >= 200 && response.status < 300) {
+        return { 
+          success: true, 
+          message: response.data?.message || "Registration successful",
+          data: response.data 
+        }
+      }
+      
+      // Fallback check for explicit success field
       return { 
-        success: response.data.success, 
-        message: response.data.message,
+        success: response.data?.success || false, 
+        message: response.data?.message || "Signup failed",
         data: response.data 
       }
     } catch (error) {
+      console.error("Signup error:", error)
       return {
         success: false,
         error: error.response?.data?.message || "Signup failed",

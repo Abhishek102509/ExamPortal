@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useNavigate, useLocation } from "react-router-dom"
-import { authAPI } from "../services/api"
+import { otpAPI } from "../services/api"
 import toast from "react-hot-toast"
 import { BookOpen, Mail, Shield, RefreshCw } from "lucide-react"
 
@@ -66,7 +66,7 @@ function OTPVerification() {
     setLoading(true)
 
     try {
-      const response = await authAPI.verifyOTP({
+      const response = await otpAPI.verifyOTP({
         email: email,
         otpCode: otp
       })
@@ -89,7 +89,7 @@ function OTPVerification() {
     setResendLoading(true)
 
     try {
-      const response = await authAPI.resendOTP({ email: email })
+      const response = await otpAPI.generateOTP({ email: email })
 
       if (response.data.success) {
         toast.success("OTP has been resent to your email")
