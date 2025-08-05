@@ -42,8 +42,155 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(224,231,255,0.7) 0%, rgba(240,253,250,0.7) 100%);
+  background: linear-gradient(135deg, rgba(15,23,42,0.8) 0%, rgba(30,41,59,0.7) 50%, rgba(15,23,42,0.8) 100%);
   z-index: 1;
+}
+
+/* Hero section enhancements */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+}
+
+/* Text shadow for better readability */
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Enhanced stats styling */
+.stat-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Feature cards enhancements */
+.feature-card {
+  transition: all 0.3s ease;
+  border-top: 4px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.feature-card:hover::before {
+  left: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card.border-primary {
+  border-top-color: #0d6efd;
+}
+
+.feature-card.border-success {
+  border-top-color: #198754;
+}
+
+.feature-card.border-info {
+  border-top-color: #0dcaf0;
+}
+
+.feature-card.border-warning {
+  border-top-color: #ffc107;
+}
+
+.feature-icon-wrapper {
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon-wrapper {
+  transform: scale(1.1);
+}
+
+/* Background gradients */
+.bg-gradient-light {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0fdff 100%);
+}
+
+/* Shadow hover effect */
+.shadow-hover {
+  transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Floating elements animation */
+.floating-elements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.floating-element {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-element-1 {
+  width: 60px;
+  height: 60px;
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-element-2 {
+  width: 80px;
+  height: 80px;
+  top: 60%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.floating-element-3 {
+  width: 40px;
+  height: 40px;
+  top: 80%;
+  left: 70%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.8;
+  }
 }
 
 /* Sidebar styles */

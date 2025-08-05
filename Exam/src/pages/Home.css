@@ -1,0 +1,210 @@
+/* Home Page Specific Styles */
+
+/* Video background improvements */
+.home-page .hero-section video {
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -2;
+  filter: brightness(0.7) contrast(1.2);
+}
+
+/* Enhanced hero section */
+.home-page .hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animated text effects */
+.home-page .display-3 {
+  background: linear-gradient(45deg, #ffffff, #e0e7ff, #ffffff);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Enhanced button styling */
+.home-page .btn-gradient {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.home-page .btn-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.home-page .btn-gradient:hover::before {
+  left: 100%;
+}
+
+/* Stats section with pulse animation */
+.home-page .stat-item {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.home-page .stat-item::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.home-page .stat-item:hover::after {
+  width: 100%;
+  height: 100%;
+}
+
+/* Parallax-like effect for sections */
+.home-page section {
+  position: relative;
+  z-index: 2;
+}
+
+/* Enhanced feature cards with 3D effect */
+.home-page .feature-card {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.home-page .feature-card:hover {
+  transform: translateY(-10px) rotateX(5deg);
+}
+
+/* Glowing border effect */
+.home-page .feature-card:hover {
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Improved typography */
+.home-page h1, .home-page h2, .home-page h3, .home-page h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.home-page .lead {
+  font-weight: 400;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* Custom scrollbar for better UX */
+.home-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.home-page::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.home-page::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 4px;
+}
+
+.home-page::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5856eb, #7c3aed);
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  .home-page .hero-section {
+    min-height: 90vh;
+    padding: 2rem 0;
+  }
+  
+  .home-page .display-3 {
+    font-size: 2.5rem;
+  }
+  
+  .home-page .stat-item {
+    margin-bottom: 1rem;
+  }
+  
+  .home-page .feature-card {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Smooth scrolling behavior */
+.home-page {
+  scroll-behavior: smooth;
+}
+
+/* Loading state for video */
+.home-page .hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  z-index: -3;
+}
+
+/* Enhanced CTA section */
+.home-page .gradient-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-page .gradient-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  z-index: 0;
+}
+
+/* Improved accessibility */
+.home-page button:focus,
+.home-page .btn:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .home-page .hero-section video,
+  .home-page .floating-elements {
+    display: none;
+  }
+}

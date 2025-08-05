@@ -1,0 +1,38 @@
+/* Bootstrap compatible App styles */
+#root {
+  height: 100vh;
+}
+
+/* Utility classes for height */
+.min-vh-80 {
+  min-height: 80vh;
+}
+
+/* Custom hover effects */
+.btn:hover {
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* Card enhancements */
+.card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Navbar enhancements */
+.navbar-brand:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Form enhancements */
+.form-control:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
