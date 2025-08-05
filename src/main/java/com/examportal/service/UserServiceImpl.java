@@ -9,15 +9,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.examportal.dao.OtpDao;
+import com.examportal.dao.PendingUserDao;
 import com.examportal.dao.UserDao;
 import com.examportal.dto.AuthResponse;
+import com.examportal.dto.OtpVerificationDTO;
+import com.examportal.dto.ResendOtpDTO;
 import com.examportal.dto.UserResponseDTO;
 import com.examportal.dto.UserSignInDTO;
 import com.examportal.dto.UserSignupDTO;
 import com.examportal.dto.UserUpdateDTO;
+import com.examportal.entities.OtpEntity;
+import com.examportal.entities.PendingUser;
 import com.examportal.entities.User;
 import com.examportal.exceptions.ApiException;
 import com.examportal.exceptions.ResourceNotFoundException;
@@ -41,6 +48,18 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private JwtUtils jwtUtils;
+    
+    @Autowired
+    private PendingUserDao pendingUserDao;
+    
+    @Autowired
+    private OtpDao otpDao;
+    
+    @Autowired
+    private EmailService emailService;
+    
+    @Autowired
+    private OtpService otpService;
 
     @Override
     public UserResponseDTO registerUser(UserSignupDTO signupDTO) {

@@ -68,14 +68,14 @@ function OTPVerification() {
     try {
       const response = await otpAPI.verifyOTP({
         email: email,
-        otpCode: otp
+        otp: otp
       })
 
-      if (response.data.success) {
+      if (response.status === 200) {
         toast.success("Email verified successfully! You can now sign in.")
         navigate("/login", { state: { email: email } })
       } else {
-        toast.error(response.data.message || "OTP verification failed")
+        toast.error(response.data || "OTP verification failed")
       }
     } catch (error) {
       console.error("OTP verification error:", error)
@@ -89,14 +89,14 @@ function OTPVerification() {
     setResendLoading(true)
 
     try {
-      const response = await otpAPI.generateOTP({ email: email })
+      const response = await otpAPI.resendOTP({ email: email })
 
-      if (response.data.success) {
+      if (response.status === 200) {
         toast.success("OTP has been resent to your email")
         setTimeLeft(600) // Reset timer to 10 minutes
         setCanResend(false)
       } else {
-        toast.error(response.data.message || "Failed to resend OTP")
+        toast.error(response.data || "Failed to resend OTP")
       }
     } catch (error) {
       console.error("Resend OTP error:", error)
